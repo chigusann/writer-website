@@ -308,8 +308,3 @@ collections:
 # 圖片設定 - 使用 GitHub 儲存
 media_library:
   name: github
-  
-# 編輯器工具列自訂
-editor:
-  preview: true
-  frame: true
