@@ -1,0 +1,19 @@
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 編輯器檔案
+.vscode/
+.idea/
+
+# 暫存檔案
+*.tmp
+*.temp
+
+# 本地設定檔案
+.env
+.env.local
+
+# 建置檔案
+dist/
+build/
