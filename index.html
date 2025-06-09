@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>筆下世界 | 作家個人網站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background: #2c3e50; /* 調整為深石板藍 */
+            color: #ecf0f1; /* 調整為柔和的白色 */
+            line-height: 1.7; /* 稍微增加行高 */
+            overflow-x: hidden;
+        }
+
+        /* 動態背景 */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, #34495e 0%, #2c3e50 40%, #233142 100%); /* 調整為更沉穩的藍灰色漸層 */
+            z-index: -3;
+        }
+
+        .floating-squares {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .square {
+            position: absolute;
+            background: linear-gradient(45deg, rgba(149, 165, 166, 0.05), rgba(127, 140, 141, 0.05), rgba(189, 195, 199, 0.05)); /* 調整為低調的灰色漸層 */
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: float-square 25s infinite ease-in-out;
+            transform-origin: center;
+        }
+        .square:nth-child(odd) { border-radius: 8px; animation-duration: 30s; }
+        .square:nth-child(even) { border-radius: 15px; animation-duration: 20s; }
+        .square:nth-child(3n) { background: linear-gradient(135deg, rgba(93, 109, 126, 0.06), rgba(84, 103, 121, 0.06)); animation-duration: 35s; }
+
+        @keyframes float-square {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.2; }
+            25% { transform: translateY(-30px) rotate(90deg) scale(1.1); opacity: 0.4; }
+            50% { transform: translateY(-60px) rotate(180deg) scale(0.9); opacity: 0.3; }
+            75% { transform: translateY(-30px) rotate(270deg) scale(1.2); opacity: 0.5; }
+        }
+
+        /* 不規則導航 */
+        .nav-container {
+            position: fixed;
+            top: 25px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+        }
+
+        .logo-block {
+            background: linear-gradient(135deg, #8E7A70, #6A7E8A); /* 調整為大地色與灰藍色漸層 */
+            padding: 15px 25px;
+            border-radius: 12px 25px 8px 20px;
+            transform: rotate(-2deg);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(44, 62, 80, 0.3);
+        }
+        .logo-block:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 0 12px 35px rgba(44, 62, 80, 0.5);
+        }
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .nav-squares { display: flex; gap: 15px; }
+        .nav-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 8px 20px 12px 15px;
+            text-decoration: none;
+            color: #ecf0f1;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-item:nth-child(1) { transform: rotate(1deg); }
+        .nav-item:nth-child(2) { transform: rotate(-1.5deg); }
+        .nav-item:nth-child(3) { transform: rotate(0.8deg); }
+        .nav-item:nth-child(4) { transform: rotate(-0.5deg); }
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        .nav-item:hover::before { left: 100%; }
+        .nav-item:hover {
+            transform: rotate(0deg) translateY(-3px);
+            background: rgba(142, 122, 112, 0.2); /* 調整 hover 顏色 */
+            border-color: rgba(142, 122, 112, 0.4);
+            box-shadow: 0 8px 20px rgba(142, 122, 112, 0.15);
+        }
+
+        /* 主要內容區 */
+        .main-content {
+            padding: 120px 30px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 英雄區塊群 */
+        .hero-blocks {
+            display: grid;
+            grid-template-columns: 1fr 0.8fr 1.2fr;
+            grid-template-rows: auto auto auto;
+            gap: 25px;
+            margin-bottom: 80px;
+            min-height: 600px;
+        }
+        .hero-block {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .hero-block::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, rgba(142, 122, 112, 0.05), rgba(106, 126, 138, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .hero-block:hover::before { opacity: 1; }
+        .hero-block:hover {
+            transform: translateY(-8px);
+            border-color: rgba(142, 122, 112, 0.3);
+            box-shadow: 0 20px 40px rgba(142, 122, 112, 0.1);
+        }
+
+        /* 主標題塊 */
+        .title-block {
+            grid-column: 1 / 3; grid-row: 1;
+            border-radius: 25px 8px 30px 12px;
+            background: linear-gradient(135deg, rgba(142, 122, 112, 0.1), rgba(106, 126, 138, 0.08));
+            display: flex; flex-direction: column; justify-content: center;
+            transform: rotate(-0.5deg);
+        }
+        .main-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #c5b8b0, #95a5a6, #b0a8a3); /* 調整標題漸層色 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            transform: rotate(0.3deg);
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(236, 240, 241, 0.8);
+            font-weight: 300;
+            transform: rotate(-0.2deg);
+        }
+
+        /* 個人照片塊 */
+        .photo-block {
+            grid-column: 3; grid-row: 1 / 3;
+            border-radius: 20px 35px 15px 25px;
+            background: linear-gradient(45deg, rgba(84, 103, 121, 0.1), rgba(106, 126, 138, 0.1));
+            display: flex; align-items: center; justify-content: center;
+            transform: rotate(1deg);
+            position: relative;
+        }
+        .author-photo {
+            width: 200px; height: 280px;
+            background: linear-gradient(135deg, #536270, #414f5d);
+            border-radius: 15px 25px 10px 20px;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+            transform: rotate(-0.8deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 簡介塊 */
+        .intro-block {
+            grid-column: 1 / 2; grid-row: 2;
+            border-radius: 15px 30px 20px 8px;
+            transform: rotate(0.8deg);
+        }
+        .intro-text {
+            font-size: 1.1rem;
+            color: rgba(236, 240, 241, 0.9);
+            line-height: 1.8;
+        }
+
+        /* 成就塊 */
+        .achievement-block {
+            grid-column: 2; grid-row: 2;
+            border-radius: 12px 20px 25px 15px;
+            background: linear-gradient(45deg, rgba(142, 122, 112, 0.1), rgba(126, 116, 109, 0.08));
+            transform: rotate(-0.6deg);
+        }
+        .achievement-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #b0a8a3; /* 調整成就標題顏色 */
+            margin-bottom: 15px;
+        }
+        .achievement-list { list-style: none; }
+        .achievement-list li {
+            padding: 8px 0;
+            color: rgba(236, 240, 241, 0.8);
+            position: relative;
+            padding-left: 20px;
+        }
+        .achievement-list li::before {
+            content: '▪';
+            position: absolute;
+            left: 0;
+            color: #8E7A70; /* 調整列表符號顏色 */
+        }
+
+        /* 統計塊 */
+        .stats-block {
+            grid-column: 1 / 4; grid-row: 3;
+            border-radius: 20px 10px 25px 18px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            background: linear-gradient(135deg, rgba(106, 126, 138, 0.08), rgba(84, 103, 121, 0.08));
+            transform: rotate(0.3deg);
+        }
+        .stat-item { text-align: center; transform: rotate(-0.2deg); }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #95a5a6, #bdc3c7); /* 調整數字漸層色 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+        .stat-label { color: rgba(236, 240, 241, 0.7); font-size: 0.95rem; margin-top: 5px; }
+
+        /* 網誌區域 */
+        .blog-section { margin: 80px 0; }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #b0a8a3, #95a5a6); /* 調整區塊標題漸層色 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transform: rotate(-0.5deg);
+        }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .blog-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .blog-card:nth-child(1) { border-radius: 25px 8px 20px 15px; transform: rotate(0.5deg); }
+        .blog-card:nth-child(2) { border-radius: 15px 25px 12px 20px; transform: rotate(-0.8deg); }
+        .blog-card:nth-child(3) { border-radius: 20px 12px 25px 8px; transform: rotate(0.3deg); }
+        .blog-card:nth-child(4) { border-radius: 12px 20px 8px 25px; transform: rotate(-0.4deg); }
+        .blog-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, rgba(142, 122, 112, 0.07), rgba(106, 126, 138, 0.07));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .blog-card:hover::before { opacity: 1; }
+        .blog-card:hover {
+            transform: rotate(0deg) translateY(-10px);
+            border-color: rgba(142, 122, 112, 0.4);
+            box-shadow: 0 20px 40px rgba(142, 122, 112, 0.15);
+        }
+        .blog-date {
+            background: linear-gradient(135deg, #82736c, #8E7A70); /* 調整日期背景色 */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px 15px 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+            transform: rotate(-1deg);
+        }
+        .blog-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ecf0f1;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        .blog-excerpt { color: rgba(236, 240, 241, 0.8); line-height: 1.7; margin-bottom: 20px; }
+        .blog-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .blog-tag {
+            background: rgba(112, 128, 144, 0.2); /* 調整標籤顏色 */
+            color: #b0c4de; /* 調整標籤文字顏色 */
+            padding: 5px 12px;
+            border-radius: 6px 12px 4px 8px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(112, 128, 144, 0.3);
+        }
+        .read-more {
+            color: #b0a8a3; /* 調整閱讀更多顏色 */
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        .read-more:hover { color: #95a5a6; transform: translateX(5px); }
+
+        /* 作品集區域 */
+        .portfolio-section { margin: 80px 0; }
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 25px;
+        }
+        .portfolio-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+        .portfolio-item:nth-child(1) { grid-column: 1; grid-row: 1; border-radius: 25px 12px 20px 15px; transform: rotate(0.5deg); background: linear-gradient(135deg, rgba(84, 103, 121, 0.08), rgba(106, 126, 138, 0.05)); }
+        .portfolio-item:nth-child(2) { grid-column: 2 / 4; grid-row: 1; border-radius: 15px 25px 10px 20px; transform: rotate(-0.3deg); background: linear-gradient(45deg, rgba(142, 122, 112, 0.08), rgba(106, 126, 138, 0.05)); }
+        .portfolio-item:nth-child(3) { grid-column: 1 / 3; grid-row: 2; border-radius: 20px 8px 25px 12px; transform: rotate(0.2deg); background: linear-gradient(135deg, rgba(126, 116, 109, 0.08), rgba(84, 103, 121, 0.05)); }
+        .portfolio-item:nth-child(4) { grid-column: 3; grid-row: 2; border-radius: 12px 20px 15px 25px; transform: rotate(-0.6deg); background: linear-gradient(45deg, rgba(106, 126, 138, 0.08), rgba(142, 122, 112, 0.05)); }
+        .portfolio-item:hover {
+            transform: rotate(0deg) translateY(-8px);
+            border-color: rgba(142, 122, 112, 0.3);
+            box-shadow: 0 20px 40px rgba(142, 122, 112, 0.1);
+        }
+        .portfolio-title { font-size: 1.6rem; font-weight: 700; color: #ecf0f1; margin-bottom: 15px; }
+        .portfolio-desc { color: rgba(236, 240, 241, 0.8); line-height: 1.6; margin-bottom: 20px; }
+        .portfolio-meta { display: flex; justify-content: space-between; align-items: center; }
+        .portfolio-category {
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6); /* 調整分類標籤顏色 */
+            color: white;
+            padding: 6px 15px;
+            border-radius: 6px 12px 8px 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .portfolio-link { color: #b0a8a3; text-decoration: none; font-weight: 600; transition: all 0.3s ease; }
+        .portfolio-link:hover { color: #95a5a6; }
+
+        /* 管理按鈕 */
+        .admin-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #8E7A70, #6A7E8A); /* 調整按鈕顏色 */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px 25px 8px 20px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(44, 62, 80, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            transform: rotate(-2deg);
+        }
+        .admin-button:hover {
+            transform: rotate(0deg) translateY(-3px);
+            box-shadow: 0 15px 35px rgba(44, 62, 80, 0.6);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .nav-squares { display: none; }
+            .hero-blocks { grid-template-columns: 1fr; grid-template-rows: auto; gap: 20px; }
+            .title-block { grid-column: 1; grid-row: 1; }
+            .photo-block { grid-column: 1; grid-row: 2; }
+            .intro-block { grid-column: 1; grid-row: 3; }
+            .achievement-block { grid-column: 1; grid-row: 4; }
+            .stats-block { grid-column: 1; grid-row: 5; grid-template-columns: repeat(2, 1fr); }
+            .portfolio-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .portfolio-item:nth-child(1) { grid-column: 1; grid-row: 1; }
+            .portfolio-item:nth-child(2) { grid-column: 1; grid-row: 2; }
+            .portfolio-item:nth-child(3) { grid-column: 1; grid-row: 3; }
+            .portfolio-item:nth-child(4) { grid-column: 1; grid-row: 4; }
+            .blog-grid { grid-template-columns: 1fr; }
+        }
+
+        /* 淡入動畫 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg"></div>
+    <div class="floating-squares"></div>
+
+    <nav class="nav-container">
+        <div class="logo-block">
+            <div class="logo-text">筆下世界</div>
+        </div>
+        <div class="nav-squares">
+            <a href="#home" class="nav-item">首頁</a>
+            <a href="#blog" class="nav-item">創作日誌</a>
+            <a href="#works" class="nav-item">作品集</a>
+            <a href="#about" class="nav-item">關於我</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="hero-blocks fade-in" id="home">
+            <div class="hero-block title-block">
+                <h1 class="main-title">創作者的世界</h1>
+                <p class="subtitle">用文字編織夢想，以故事連結心靈</p>
+            </div>
+
+            <div class="hero-block photo-block">
+                <div class="author-photo">
+                    作者照片
+                </div>
+            </div>
+
+            <div class="hero-block intro-block">
+                <h3 style="color: #95a5a6; font-size: 1.3rem; margin-bottom: 15px;">關於我</h3>
+                <p class="intro-text">
+                    一位熱愛文字的創作者，專注於探索人性的深度與情感的溫度。
+                    透過不同的故事形式，分享生活中的美好與感動。
+                </p>
+            </div>
+
+            <div class="hero-block achievement-block">
+                <h3 class="achievement-title">創作成就</h3>
+                <ul class="achievement-list">
+                    <li>出版小說 3 部</li>
+                    <li>短篇小說獎得主</li>
+                    <li>文學雜誌專欄作家</li>
+                    <li>讀者社群 5000+ 人</li>
+                </ul>
+            </div>
+
+            <div class="hero-block stats-block">
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">年創作經驗</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">作品發表</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50K+</span>
+                    <span class="stat-label">讀者追蹤</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">365</span>
+                    <span class="stat-label">日更新誌</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="blog-section fade-in" id="blog">
+            <h2 class="section-title">創作日誌</h2>
+            <div class="blog-grid" id="blog-container">
+                <article class="blog-card">
+                    <div class="blog-date">2025.06.09</div>
+                    <h3 class="blog-title">寫作路上的小確幸</h3>
+                    <p class="blog-excerpt">
+                        今天收到一位讀者的來信，說我的故事讓她重新找到了生活的勇氣。
+                        這就是寫作最美好的回饋，不是嗎？每一個字都值得...
+                    </p>
+                    <div class="blog-tags">
+                        <span class="blog-tag">日常</span>
+                        <span class="blog-tag">感悟</span>
+                    </div>
+                    <a href="#" class="read-more">繼續閱讀 →</a>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-date">2025.06.08</div>
+                    <h3 class="blog-title">新作品的靈感來源</h3>
+                    <p class="blog-excerpt">
+                        在咖啡店裡觀察到一對老夫妻，他們無聲的默契讓我想起了什麼是真正的愛情。
+                        這個場景將成為我下一部小說的開端...
+                    </p>
+                    <div class="blog-tags">
+                        <span class="blog-tag">靈感</span>
+                        <span class="blog-tag">創作</span>
+                    </div>
+                    <a href="#" class="read-more">繼續閱讀 →</a>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-date">2025.06.07</div>
+                    <h3 class="blog-title">文字與音樂的對話</h3>
+                    <p class="blog-excerpt">
+                        今天嘗試了一種新的寫作方式，一邊聽著巴赫的《哥德堡變奏曲》一邊寫作。
+                        音樂的節拍竟然帶動了文字的韻律...
+                    </p>
+                    <div class="blog-tags">
+                        <span class="blog-tag">音樂</span>
+                        <span class="blog-tag">實驗</span>
+                    </div>
+                    <a href="#" class="read-more">繼續閱讀 →</a>
+                </article>
+                <article class="blog-card">
+                    <div class="blog-date">2025.06.06</div>
+                    <h3 class="blog-title">夜晚的城市與故事</h3>
+                    <p class="blog-excerpt">
+                        深夜的城市有種特別的魅力，霓虹燈下每個人都有自己的故事。
+                        今晚我想寫一個關於孤獨與溫暖的故事...
+                    </p>
+                    <div class="blog-tags">
+                        <span class="blog-tag">都市</span>
+                        <span class="blog-tag">夜晚</span>
+                    </div>
+                    <a href="#" class="read-more">繼續閱讀 →</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="portfolio-section fade-in" id="works">
+            <h2 class="section-title">文學作品</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <h3 class="portfolio-title">《時光的餘韻》</h3>
+                    <p class="portfolio-desc">
+                        一部探討記憶與時間的長篇小說，透過三個世代的故事，
+                        描繪出家族傳承中的愛與失落。
+                    </p>
+                    <div class="portfolio-meta">
+                        <span class="portfolio-category">長篇小說</span>
+                        <a href="#" class="portfolio-link">了解更多 →</a>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <h3 class="portfolio-title">《城市邊緣人》</h3>
+                    <p class="portfolio-desc">
+                        短篇小說集，收錄12個現代都市人的故事，
+                        每一個都是關於尋找與失去的詩篇。
+                    </p>
+                    <div class="portfolio-meta">
+                        <span class="portfolio-category">短篇集</span>
+                        <a href="#" class="portfolio-link">閱讀試讀 →</a>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <h3 class="portfolio-title">《詩與遠方》</h3>
+                    <p class="portfolio-desc">
+                        詩歌散文集，記錄旅途中的所見所感，
+                        文字間流淌著對生活的熱愛與思考。每一首詩都是心靈的對話。
+                    </p>
+                    <div class="portfolio-meta">
+                        <span class="portfolio-category">詩歌散文</span>
+                        <a href="#" class="portfolio-link">線上閱讀 →</a>
+                    </div>
+                </div>
+
+                <div class="portfolio-item">
+                    <h3 class="portfolio-title">《寫作教室》</h3>
+                    <p class="portfolio-desc">
+                        分享寫作技巧與創作心得的教學文章，
+                        幫助更多人找到屬於自己的文字聲音。
+                    </p>
+                    <div class="portfolio-meta">
+                        <span class="portfolio-category">教學</span>
+                        <a href="#" class="portfolio-link">開始學習 →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <a href="/admin" class="admin-button">✍️ 創作管理</a>
+
+    <script>
+        // 內容管理系統
+        class WriterContentManager {
+            constructor() {
+                this.blogPosts = [];
+                this.portfolioItems = [];
+                this.init();
+            }
+
+            async init() {
+                await this.loadContent();
+                this.initEffects();
+                this.initAnimations();
+            }
+
+            async loadContent() {
+                try {
+                    // 嘗試載入網誌內容
+                    const blogResponse = await fetch('/api/blog-posts.json');
+                    if (blogResponse.ok) {
+                        this.blogPosts = await blogResponse.json();
+                        this.renderBlogPosts();
+                    }
+
+                    // 嘗試載入作品集
+                    const portfolioResponse = await fetch('/api/portfolio.json');
+                    if (portfolioResponse.ok) {
+                        this.portfolioItems = await portfolioResponse.json();
+                        this.renderPortfolio();
+                    }
+                } catch (error) {
+                    console.log('使用範例內容');
+                }
+            }
+
+            renderBlogPosts() {
+                const container = document.getElementById('blog-container');
+                if (this.blogPosts.length > 0) {
+                    container.innerHTML = this.blogPosts
+                        .filter(post => post.published !== false)
+                        .sort((a, b) => new Date(b.date) - new Date(a.date))
+                        .slice(0, 4) // 只顯示最新的4篇
+                        .map(post => this.createBlogCard(post))
+                        .join('');
+                }
+            }
+
+            createBlogCard(post) {
+                const date = new Date(post.date).toLocaleDateString('zh-TW');
+                const tags = post.tags ? post.tags.map(tag => 
+                    `<span class="blog-tag">${tag}</span>`
+                ).join('') : '';
+
+                return `
+                    <article class="blog-card">
+                        <div class="blog-date">${date}</div>
+                        <h3 class="blog-title">${post.title}</h3>
+                        <p class="blog-excerpt">${post.excerpt || post.content.substring(0, 150) + '...'}</p>
+                        <div class="blog-tags">${tags}</div>
+                        <a href="/blog/${post.slug}" class="read-more">繼續閱讀 →</a>
+                    </article>
+                `;
+            }
+
+            initEffects() {
+                // 建立浮動方塊
+                this.createFloatingSquares();
+                
+                // 滾動效果
+                this.initScrollEffects();
+                
+                // 滑鼠效果 (此效果在觸控設備上可能不明顯，但保留給桌面用戶)
+                // this.initMouseEffects(); 
+            }
+
+            createFloatingSquares() {
+                const container = document.querySelector('.floating-squares');
+                if (!container) return;
+                const squareCount = 15;
+
+                for (let i = 0; i < squareCount; i++) {
+                    const square = document.createElement('div');
+                    square.className = 'square';
+                    
+                    const size = Math.random() * 60 + 20;
+                    square.style.width = size + 'px';
+                    square.style.height = size + 'px';
+                    square.style.left = Math.random() * 100 + '%';
+                    square.style.top = Math.random() * 100 + '%';
+                    
+                    square.style.animationDelay = Math.random() * -30 + 's';
+                    
+                    container.appendChild(square);
+                }
+            }
+
+            initScrollEffects() {
+                // 淡入動畫觀察器
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.fade-in').forEach(el => {
+                    observer.observe(el);
+                });
+
+                // 平滑滾動
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+            
+            // 由於 perspective 效果在某些情況下會覆蓋 hover 的 transform，
+            // 且在複雜排版中可能造成性能抖動，故先將其註解。若需要可取消註解。
+            /*
+            initMouseEffects() {
+                // 卡片跟隨滑鼠效果
+                document.querySelectorAll('.blog-card, .portfolio-item, .hero-block').forEach(card => {
+                    card.addEventListener('mousemove', function(e) {
+                        const rect = this.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        
+                        const rotateX = (y - centerY) / 25; // 減小旋轉幅度
+                        const rotateY = (centerX - x) / 25;
+                        
+                        this.style.transform += ` perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    });
+                    
+                    card.addEventListener('mouseleave', function() {
+                        this.style.transform = this.style.transform.replace(/ perspective\(.*\)/, '');
+                    });
+                });
+            }
+            */
+
+            initAnimations() {
+                // 文字打字效果
+                this.typeWriter('.main-title', 100);
+                
+                // 數字計數動畫
+                setTimeout(() => {
+                    this.animateNumbers();
+                }, 1000);
+            }
+
+            typeWriter(selector, speed = 100) {
+                const element = document.querySelector(selector);
+                if (!element) return;
+                
+                const text = element.textContent;
+                element.textContent = '';
+                
+                let i = 0;
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                    }
+                }, speed);
+            }
+
+            animateNumbers() {
+                const numbers = document.querySelectorAll('.stat-number');
+                numbers.forEach(num => {
+                    const target = parseInt(num.textContent.replace(/[^\d]/g, '')) || 0;
+                    if (target === 0) return;
+                    
+                    let current = 0;
+                    const increment = target / 60;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        
+                        const suffix = num.textContent.replace(/[\d]/g, '');
+                        num.textContent = Math.floor(current) + suffix;
+                    }, 50);
+                });
+            }
+        }
+
+        // 初始化系統
+        document.addEventListener('DOMContentLoaded', () => {
+            window.writerCMS = new WriterContentManager();
+        });
+
+        // 鍵盤快捷鍵（管理員用）
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                window.location.href = '/admin';
+            }
+        });
+    </script>
+</body>
+</html>
