@@ -116,7 +116,7 @@
     // 自訂預覽樣式 - 使用與主網站相同的風格
     CMS.registerPreviewStyle('/style.css');
     
-    // 修復後的網誌文章預覽範本
+    // 修復後的網誌文章預覽範本 - 使用 React 元素
     CMS.registerPreviewTemplate('blog', function(entry, getAsset) {
       try {
         // 安全地獲取資料
@@ -129,65 +129,163 @@
         const excerpt = data.excerpt || '';
         const youtube_url = data.youtube_url || '';
         
-        return `
-          <div style="max-width: 800px; margin: 0 auto; padding: 30px; background: #2c3e50; color: #ecf0f1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px 8px 25px 12px; padding: 40px; border: 1px solid rgba(255, 255, 255, 0.1);">
-              
-              <div style="background: linear-gradient(135deg, #8E7A70, #6A7E8A); color: white; padding: 10px 20px; border-radius: 8px 15px 6px 12px; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-bottom: 20px; transform: rotate(-1deg);">
-                ${date}
-              </div>
-              
-              <h1 style="font-size: 2.2rem; font-weight: 700; color: #ecf0f1; margin-bottom: 20px; line-height: 1.3;">
-                ${title}
-              </h1>
-              
-              ${tags && tags.length > 0 ? `
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px;">
-                  ${tags.map(tag => `
-                    <span style="background: rgba(112, 128, 144, 0.2); color: #b0c4de; padding: 6px 15px; border-radius: 6px 12px 4px 8px; font-size: 0.85rem; border: 1px solid rgba(112, 128, 144, 0.3);">
-                      ${tag}
-                    </span>
-                  `).join('')}
-                </div>
-              ` : ''}
-              
-              ${excerpt ? `
-                <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-style: italic; color: rgba(236, 240, 241, 0.8);">
-                  ${excerpt}
-                </div>
-              ` : ''}
-              
-              <div style="color: rgba(236, 240, 241, 0.9); line-height: 1.8; font-size: 1.1rem;">
-                ${body ? String(body).replace(/\n/g, '<br>') : '開始寫作吧...'}
-              </div>
-              
-              ${youtube_url ? `
-                <div style="margin-top: 30px; text-align: center;">
-                  <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
-                    <h4 style="color: #95a5a6; margin-bottom: 15px;">📺 YouTube 影片</h4>
-                    <p style="color: rgba(236, 240, 241, 0.7); word-break: break-all;">${youtube_url}</p>
-                  </div>
-                </div>
-              ` : ''}
-              
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); color: rgba(236, 240, 241, 0.6); font-size: 0.9rem;">
-                預覽模式 - 這是你的讀者將看到的樣子 ✨
-              </div>
-            </div>
-          </div>
-        `;
+        // 返回 React 元素而不是 HTML 字符串
+        return React.createElement('div', {
+          style: {
+            maxWidth: '800px',
+            margin: '0 auto',
+            padding: '30px',
+            background: '#2c3e50',
+            color: '#ecf0f1',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }
+        }, [
+          React.createElement('div', {
+            key: 'main-content',
+            style: {
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: '20px',
+              padding: '40px',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }
+          }, [
+            React.createElement('div', {
+              key: 'date',
+              style: {
+                background: 'linear-gradient(135deg, #8E7A70, #6A7E8A)',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                display: 'inline-block',
+                marginBottom: '20px'
+              }
+            }, date),
+            
+            React.createElement('h1', {
+              key: 'title',
+              style: {
+                fontSize: '2.2rem',
+                fontWeight: '700',
+                color: '#ecf0f1',
+                marginBottom: '20px',
+                lineHeight: '1.3'
+              }
+            }, title),
+            
+            tags && tags.length > 0 ? React.createElement('div', {
+              key: 'tags',
+              style: {
+                display: 'flex',
+                gap: '10px',
+                flexWrap: 'wrap',
+                marginBottom: '25px'
+              }
+            }, tags.map((tag, index) => 
+              React.createElement('span', {
+                key: index,
+                style: {
+                  background: 'rgba(112, 128, 144, 0.2)',
+                  color: '#b0c4de',
+                  padding: '6px 15px',
+                  borderRadius: '6px',
+                  fontSize: '0.85rem',
+                  border: '1px solid rgba(112, 128, 144, 0.3)'
+                }
+              }, tag)
+            )) : null,
+            
+            excerpt ? React.createElement('div', {
+              key: 'excerpt',
+              style: {
+                background: 'rgba(255, 255, 255, 0.03)',
+                padding: '15px',
+                borderRadius: '8px',
+                marginBottom: '20px',
+                fontStyle: 'italic',
+                color: 'rgba(236, 240, 241, 0.8)'
+              }
+            }, excerpt) : null,
+            
+            React.createElement('div', {
+              key: 'body',
+              style: {
+                color: 'rgba(236, 240, 241, 0.9)',
+                lineHeight: '1.8',
+                fontSize: '1.1rem',
+                whiteSpace: 'pre-wrap'
+              }
+            }, body || '開始寫作吧...'),
+            
+            youtube_url ? React.createElement('div', {
+              key: 'youtube',
+              style: {
+                marginTop: '30px',
+                textAlign: 'center'
+              }
+            }, React.createElement('div', {
+              style: {
+                background: 'rgba(255, 255, 255, 0.05)',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 255, 255, 0.1)'
+              }
+            }, [
+              React.createElement('h4', {
+                key: 'youtube-title',
+                style: {
+                  color: '#95a5a6',
+                  marginBottom: '15px'
+                }
+              }, '📺 YouTube 影片'),
+              React.createElement('p', {
+                key: 'youtube-url',
+                style: {
+                  color: 'rgba(236, 240, 241, 0.7)',
+                  wordBreak: 'break-all'
+                }
+              }, youtube_url)
+            ])) : null,
+            
+            React.createElement('div', {
+              key: 'footer',
+              style: {
+                marginTop: '30px',
+                paddingTop: '20px',
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                color: 'rgba(236, 240, 241, 0.6)',
+                fontSize: '0.9rem'
+              }
+            }, '預覽模式 - 這是你的讀者將看到的樣子 ✨')
+          ])
+        ]);
+        
       } catch (error) {
         console.error('預覽錯誤:', error);
-        return `
-          <div style="max-width: 800px; margin: 0 auto; padding: 30px; background: #2c3e50; color: #ecf0f1; text-align: center;">
-            <h2 style="color: #e74c3c;">預覽暫時無法使用</h2>
-            <p style="color: rgba(236, 240, 241, 0.7);">請繼續編輯，發布後就能正常顯示</p>
-          </div>
-        `;
+        return React.createElement('div', {
+          style: {
+            maxWidth: '800px',
+            margin: '0 auto',
+            padding: '30px',
+            background: '#2c3e50',
+            color: '#ecf0f1',
+            textAlign: 'center'
+          }
+        }, [
+          React.createElement('h2', {
+            key: 'error-title',
+            style: { color: '#e74c3c' }
+          }, '預覽暫時無法使用'),
+          React.createElement('p', {
+            key: 'error-desc',
+            style: { color: 'rgba(236, 240, 241, 0.7)' }
+          }, '請繼續編輯，發布後就能正常顯示')
+        ]);
       }
     });
 
-    // 修復後的作品集預覽範本
+    // 修復後的作品集預覽範本 - 使用 React 元素
     CMS.registerPreviewTemplate('portfolio', function(entry, getAsset) {
       try {
         const data = entry.getIn ? entry.getIn(['data']).toJS() : entry.data || {};
@@ -198,47 +296,107 @@
         const publication_date = data.publication_date || '';
         const external_link = data.external_link || '';
         
-        return `
-          <div style="max-width: 600px; margin: 0 auto; padding: 30px; background: #2c3e50; color: #ecf0f1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 25px 12px 20px 15px; padding: 35px; border: 1px solid rgba(255, 255, 255, 0.1); transform: rotate(0.5deg);">
-              
-              <h2 style="font-size: 1.8rem; font-weight: 700; color: #ecf0f1; margin-bottom: 15px;">
-                ${title}
-              </h2>
-              
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <span style="background: linear-gradient(135deg, #7f8c8d, #95a5a6); color: white; padding: 8px 15px; border-radius: 6px 12px 8px 10px; font-size: 0.9rem; font-weight: 600;">
-                  ${category}
-                </span>
-                ${publication_date ? `
-                  <span style="color: rgba(236, 240, 241, 0.7); font-size: 0.9rem;">
-                    ${publication_date}
-                  </span>
-                ` : ''}
-              </div>
-              
-              <div style="color: rgba(236, 240, 241, 0.8); line-height: 1.7; margin-bottom: 20px;">
-                ${body ? String(body).replace(/\n/g, '<br>') : '開始描述你的作品...'}
-              </div>
-              
-              ${external_link ? `
-                <div style="text-align: right;">
-                  <a href="${external_link}" style="color: #b0a8a3; text-decoration: none; font-weight: 600;">
-                    了解更多 →
-                  </a>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-        `;
+        return React.createElement('div', {
+          style: {
+            maxWidth: '600px',
+            margin: '0 auto',
+            padding: '30px',
+            background: '#2c3e50',
+            color: '#ecf0f1',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }
+        }, React.createElement('div', {
+          style: {
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '25px',
+            padding: '35px',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }
+        }, [
+          React.createElement('h2', {
+            key: 'title',
+            style: {
+              fontSize: '1.8rem',
+              fontWeight: '700',
+              color: '#ecf0f1',
+              marginBottom: '15px'
+            }
+          }, title),
+          
+          React.createElement('div', {
+            key: 'meta',
+            style: {
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px'
+            }
+          }, [
+            React.createElement('span', {
+              key: 'category',
+              style: {
+                background: 'linear-gradient(135deg, #7f8c8d, #95a5a6)',
+                color: 'white',
+                padding: '8px 15px',
+                borderRadius: '6px',
+                fontSize: '0.9rem',
+                fontWeight: '600'
+              }
+            }, category),
+            
+            publication_date ? React.createElement('span', {
+              key: 'date',
+              style: {
+                color: 'rgba(236, 240, 241, 0.7)',
+                fontSize: '0.9rem'
+              }
+            }, publication_date) : null
+          ]),
+          
+          React.createElement('div', {
+            key: 'body',
+            style: {
+              color: 'rgba(236, 240, 241, 0.8)',
+              lineHeight: '1.7',
+              marginBottom: '20px',
+              whiteSpace: 'pre-wrap'
+            }
+          }, body || '開始描述你的作品...'),
+          
+          external_link ? React.createElement('div', {
+            key: 'link',
+            style: { textAlign: 'right' }
+          }, React.createElement('a', {
+            href: external_link,
+            style: {
+              color: '#b0a8a3',
+              textDecoration: 'none',
+              fontWeight: '600'
+            }
+          }, '了解更多 →')) : null
+        ]));
+        
       } catch (error) {
         console.error('作品集預覽錯誤:', error);
-        return `
-          <div style="max-width: 600px; margin: 0 auto; padding: 30px; background: #2c3e50; color: #ecf0f1; text-align: center;">
-            <h2 style="color: #e74c3c;">預覽暫時無法使用</h2>
-            <p style="color: rgba(236, 240, 241, 0.7);">請繼續編輯，發布後就能正常顯示</p>
-          </div>
-        `;
+        return React.createElement('div', {
+          style: {
+            maxWidth: '600px',
+            margin: '0 auto',
+            padding: '30px',
+            background: '#2c3e50',
+            color: '#ecf0f1',
+            textAlign: 'center'
+          }
+        }, [
+          React.createElement('h2', {
+            key: 'error-title',
+            style: { color: '#e74c3c' }
+          }, '預覽暫時無法使用'),
+          React.createElement('p', {
+            key: 'error-desc',
+            style: { color: 'rgba(236, 240, 241, 0.7)' }
+          }, '請繼續編輯，發布後就能正常顯示')
+        ]);
       }
     });
 
