@@ -1,0 +1,13 @@
+stats:
+  - number: "5"
+    label: "年創作經驗"
+    order: 1
+  - number: "12"
+    label: "作品發表"
+    order: 2
+  - number: "50K+"
+    label: "讀者追蹤"
+    order: 3
+  - number: "365"
+    label: "日更新誌"
+    order: 4
