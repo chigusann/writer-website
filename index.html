@@ -625,7 +625,7 @@
         </section>
     </main>
 
-    <!-- 管理按鈕 - 只有登入時才顯示 -->
+    <!-- 管理按鈕 - 只有管理員登入時才顯示 -->
     <a href="/admin" class="admin-button" id="adminButton">✍️ 創作管理</a>
 
     <!-- Netlify Identity Widget -->
@@ -644,7 +644,7 @@
                 await this.loadContent();
                 this.initEffects();
                 this.initAnimations();
-                this.initAdminAccess(); // 新增管理員權限檢查
+                this.initAdminAccess(); // 管理員權限檢查
             }
 
             async loadContent() {
@@ -715,32 +715,153 @@
                             adminButton.style.display = 'none';
                         });
                     });
+                } else {
+                    console.log('Netlify Identity 未載入');
                 }
             }
 
             // 檢查是否為管理員
             checkAdminStatus(user, adminButton) {
+                console.log('檢查用戶狀態:', user);
+                
                 if (!user) {
                     adminButton.style.display = 'none';
+                    console.log('無用戶登入');
                     return;
                 }
 
                 // 檢查用戶 email 是否為管理員 email
                 const adminEmails = ['chiguchigu010@gmail.com']; // 只有這個 email 是管理員
                 
-                // 或者檢查用戶角色
+                // 檢查用戶角色
                 const userEmail = user.email;
                 const userRoles = user.app_metadata?.roles || [];
+                
+                console.log('用戶 Email:', userEmail);
+                console.log('用戶角色:', userRoles);
                 
                 // 如果是管理員 email 或有 admin 角色，才顯示按鈕
                 if (adminEmails.includes(userEmail) || userRoles.includes('admin')) {
                     adminButton.style.display = 'block';
-                    console.log('👑 管理員已登入');
+                    console.log('👑 管理員已登入 - 顯示管理按鈕');
                 } else {
                     adminButton.style.display = 'none';
-                    console.log('👤 一般用戶已登入');
+                    console.log('👤 一般用戶已登入 - 隱藏管理按鈕');
                 }
             }
+
+            initEffects() {
+                // 建立浮動方塊
+                this.createFloatingSquares();
+                
+                // 滾動效果
+                this.initScrollEffects();
+            }
+
+            createFloatingSquares() {
+                const container = document.querySelector('.floating-squares');
+                if (!container) return;
+                const squareCount = 15;
+
+                for (let i = 0; i < squareCount; i++) {
+                    const square = document.createElement('div');
+                    square.className = 'square';
+                    
+                    const size = Math.random() * 60 + 20;
+                    square.style.width = size + 'px';
+                    square.style.height = size + 'px';
+                    square.style.left = Math.random() * 100 + '%';
+                    square.style.top = Math.random() * 100 + '%';
+                    
+                    square.style.animationDelay = Math.random() * -30 + 's';
+                    
+                    container.appendChild(square);
+                }
+            }
+
+            initScrollEffects() {
+                // 淡入動畫觀察器
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.fade-in').forEach(el => {
+                    observer.observe(el);
+                });
+
+                // 平滑滾動
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+            }
+
+            initAnimations() {
+                // 文字打字效果
+                this.typeWriter('.main-title', 100);
+                
+                // 數字計數動畫
+                setTimeout(() => {
+                    this.animateNumbers();
+                }, 1000);
+            }
+
+            typeWriter(selector, speed = 100) {
+                const element = document.querySelector(selector);
+                if (!element) return;
+                
+                const text = element.textContent;
+                element.textContent = '';
+                
+                let i = 0;
+                const timer = setInterval(() => {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                    }
+                }, speed);
+            }
+
+            animateNumbers() {
+                const numbers = document.querySelectorAll('.stat-number');
+                numbers.forEach(num => {
+                    const target = parseInt(num.textContent.replace(/[^\d]/g, '')) || 0;
+                    if (target === 0) return;
+                    
+                    let current = 0;
+                    const increment = target / 60;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        
+                        const suffix = num.textContent.replace(/[\d]/g, '');
+                        num.textContent = Math.floor(current) + suffix;
+                    }, 50);
+                });
+            }
+        }
 
         // 初始化系統
         document.addEventListener('DOMContentLoaded', () => {
