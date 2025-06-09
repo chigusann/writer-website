@@ -696,20 +696,18 @@
                 `;
             }
 
-            // 管理員權限檢查
+            // 管理員權限檢查 - 只有真正的管理員才能看到按鈕
             initAdminAccess() {
                 const adminButton = document.getElementById('adminButton');
                 
                 if (window.netlifyIdentity) {
                     window.netlifyIdentity.on("init", user => {
-                        // 如果用戶已登入，顯示管理按鈕
-                        if (user) {
-                            adminButton.style.display = 'block';
-                        }
+                        // 檢查用戶是否為管理員
+                        this.checkAdminStatus(user, adminButton);
                         
                         // 監聽登入事件
-                        window.netlifyIdentity.on("login", () => {
-                            adminButton.style.display = 'block';
+                        window.netlifyIdentity.on("login", (user) => {
+                            this.checkAdminStatus(user, adminButton);
                         });
                         
                         // 監聽登出事件
@@ -718,214 +716,31 @@
                         });
                     });
                 }
-                
-                // 秘密管理入口 - 輸入 "admin" 五個字母
-                let secretSequence = [];
-                const SECRET_CODE = ['a', 'd', 'm', 'i', 'n'];
-                
-                document.addEventListener('keydown', (e) => {
-                    secretSequence.push(e.key.toLowerCase());
-                    
-                    // 只保留最近5個按鍵
-                    if (secretSequence.length > SECRET_CODE.length) {
-                        secretSequence.shift();
-                    }
-                    
-                    // 檢查是否匹配秘密代碼
-                    if (secretSequence.join('') === SECRET_CODE.join('')) {
-                        this.showSecretAdminPanel();
-                    }
-                });
-                
-                // 原有的 Ctrl+Shift+A 快捷鍵
-                document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                        window.location.href = '/admin';
-                    }
-                });
             }
 
-            // 秘密管理面板
-            showSecretAdminPanel() {
-                const overlay = document.createElement('div');
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.8);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 10000;
-                `;
-                
-                overlay.innerHTML = `
-                    <div style="
-                        background: linear-gradient(135deg, #2c3e50, #34495e);
-                        padding: 40px;
-                        border-radius: 20px;
-                        text-align: center;
-                        color: white;
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-                    ">
-                        <h2 style="margin-bottom: 20px; font-size: 1.8rem;">🔐 創作者專用入口</h2>
-                        <p style="margin-bottom: 30px; opacity: 0.8; font-size: 1.1rem;">歡迎回來，親愛的創作者！</p>
-                        <button onclick="window.location.href='/admin'" style="
-                            background: linear-gradient(135deg, #8E7A70, #6A7E8A);
-                            color: white;
-                            border: none;
-                            padding: 15px 30px;
-                            border-radius: 10px;
-                            font-size: 1rem;
-                            cursor: pointer;
-                            margin-right: 15px;
-                            transition: all 0.3s ease;
-                        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                            🚀 進入管理後台
-                        </button>
-                        <button onclick="this.closest('div').parentElement.remove()" style="
-                            background: transparent;
-                            color: rgba(255, 255, 255, 0.7);
-                            border: 1px solid rgba(255, 255, 255, 0.3);
-                            padding: 15px 30px;
-                            border-radius: 10px;
-                            font-size: 1rem;
-                            cursor: pointer;
-                            transition: all 0.3s ease;
-                        " onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.5)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.3)'">
-                            取消
-                        </button>
-                        <div style="margin-top: 25px; font-size: 0.9rem; opacity: 0.6;">
-                            💡 小提示：你也可以使用 Ctrl+Shift+A 快捷鍵
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(overlay);
-                
-                // 點擊背景關閉
-                overlay.addEventListener('click', (e) => {
-                    if (e.target === overlay) {
-                        overlay.remove();
-                    }
-                });
-            }
+            // 檢查是否為管理員
+            checkAdminStatus(user, adminButton) {
+                if (!user) {
+                    adminButton.style.display = 'none';
+                    return;
+                }
 
-            initEffects() {
-                // 建立浮動方塊
-                this.createFloatingSquares();
+                // 檢查用戶 email 是否為管理員 email
+                const adminEmails = ['chiguchigu010@gmail.com']; // 只有這個 email 是管理員
                 
-                // 滾動效果
-                this.initScrollEffects();
-            }
-
-            createFloatingSquares() {
-                const container = document.querySelector('.floating-squares');
-                if (!container) return;
-                const squareCount = 15;
-
-                for (let i = 0; i < squareCount; i++) {
-                    const square = document.createElement('div');
-                    square.className = 'square';
-                    
-                    const size = Math.random() * 60 + 20;
-                    square.style.width = size + 'px';
-                    square.style.height = size + 'px';
-                    square.style.left = Math.random() * 100 + '%';
-                    square.style.top = Math.random() * 100 + '%';
-                    
-                    square.style.animationDelay = Math.random() * -30 + 's';
-                    
-                    container.appendChild(square);
+                // 或者檢查用戶角色
+                const userEmail = user.email;
+                const userRoles = user.app_metadata?.roles || [];
+                
+                // 如果是管理員 email 或有 admin 角色，才顯示按鈕
+                if (adminEmails.includes(userEmail) || userRoles.includes('admin')) {
+                    adminButton.style.display = 'block';
+                    console.log('👑 管理員已登入');
+                } else {
+                    adminButton.style.display = 'none';
+                    console.log('👤 一般用戶已登入');
                 }
             }
-
-            initScrollEffects() {
-                // 淡入動畫觀察器
-                const observerOptions = {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('visible');
-                        }
-                    });
-                }, observerOptions);
-
-                document.querySelectorAll('.fade-in').forEach(el => {
-                    observer.observe(el);
-                });
-
-                // 平滑滾動
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const target = document.querySelector(this.getAttribute('href'));
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    });
-                });
-            }
-
-            initAnimations() {
-                // 文字打字效果
-                this.typeWriter('.main-title', 100);
-                
-                // 數字計數動畫
-                setTimeout(() => {
-                    this.animateNumbers();
-                }, 1000);
-            }
-
-            typeWriter(selector, speed = 100) {
-                const element = document.querySelector(selector);
-                if (!element) return;
-                
-                const text = element.textContent;
-                element.textContent = '';
-                
-                let i = 0;
-                const timer = setInterval(() => {
-                    if (i < text.length) {
-                        element.textContent += text.charAt(i);
-                        i++;
-                    } else {
-                        clearInterval(timer);
-                    }
-                }, speed);
-            }
-
-            animateNumbers() {
-                const numbers = document.querySelectorAll('.stat-number');
-                numbers.forEach(num => {
-                    const target = parseInt(num.textContent.replace(/[^\d]/g, '')) || 0;
-                    if (target === 0) return;
-                    
-                    let current = 0;
-                    const increment = target / 60;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            current = target;
-                            clearInterval(timer);
-                        }
-                        
-                        const suffix = num.textContent.replace(/[\d]/g, '');
-                        num.textContent = Math.floor(current) + suffix;
-                    }, 50);
-                });
-            }
-        }
 
         // 初始化系統
         document.addEventListener('DOMContentLoaded', () => {
