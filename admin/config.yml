@@ -11,7 +11,7 @@ media_folder: "images"
 public_folder: "/images"
 
 # 網站URL (部署後記得更新)
-site_url: https://你的網站.netlify.app
+site_url: https://sunny-speculoos-eaff2c.netlify.app
 
 # 顯示預覽連結
 show_preview_links: true
