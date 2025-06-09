@@ -1,0 +1,267 @@
+backend:
+  name: github
+  repo: 你的GitHub帳號/writer-website  # 記得更改為你的 repo
+  branch: main
+  
+# 本地開發設定 (可選)
+# local_backend: true
+
+# 圖片存放位置
+media_folder: "images"
+public_folder: "/images"
+
+# 網站URL (部署後記得更新)
+site_url: https://你的網站.netlify.app
+
+# 顯示預覽連結
+show_preview_links: true
+
+# 編輯器設定
+editor:
+  preview: true
+
+collections:
+  # 網誌文章管理
+  - name: "blog"
+    label: "創作日誌"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - label: "標題"
+        name: "title"
+        widget: "string"
+        hint: "吸引人的文章標題"
+        
+      - label: "發布日期"
+        name: "date"
+        widget: "datetime"
+        default: ""
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+        format: "YYYY-MM-DD HH:mm:ss"
+        
+      - label: "標籤"
+        name: "tags"
+        widget: "list"
+        required: false
+        hint: "例如：日常、創作、靈感"
+        
+      - label: "摘要"
+        name: "excerpt"
+        widget: "text"
+        required: false
+        hint: "文章的簡短摘要，會顯示在首頁"
+        
+      - label: "封面圖片"
+        name: "featured_image"
+        widget: "image"
+        required: false
+        hint: "選擇一張代表文章的圖片"
+        
+      - label: "YouTube 影片"
+        name: "youtube_url"
+        widget: "string"
+        required: false
+        pattern: 
+          - "^(https?://)?(www\\.)?(youtube\\.com/watch\\?v=|youtu\\.be/)[\\w-]+.*$"
+          - "請輸入有效的 YouTube 連結"
+        hint: "貼上 YouTube 影片連結，系統會自動嵌入"
+        
+      - label: "內文"
+        name: "body"
+        widget: "markdown"
+        hint: "在這裡寫下你的創作內容"
+        
+      - label: "發布狀態"
+        name: "published"
+        widget: "boolean"
+        default: true
+        hint: "取消勾選可儲存為草稿"
+        
+      - label: "置頂文章"
+        name: "pinned"
+        widget: "boolean"
+        default: false
+        required: false
+        hint: "重要文章可設為置頂"
+
+  # 作品集管理
+  - name: "portfolio"
+    label: "文學作品"
+    folder: "_portfolio"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - label: "作品名稱"
+        name: "title"
+        widget: "string"
+        
+      - label: "作品類型"
+        name: "category"
+        widget: "select"
+        options: 
+          - { label: "長篇小說", value: "長篇小說" }
+          - { label: "短篇小說", value: "短篇小說" }
+          - { label: "短篇集", value: "短篇集" }
+          - { label: "詩歌散文", value: "詩歌散文" }
+          - { label: "劇本", value: "劇本" }
+          - { label: "教學", value: "教學" }
+          - { label: "其他", value: "其他" }
+          
+      - label: "發表日期"
+        name: "publication_date"
+        widget: "string"
+        required: false
+        hint: "例如：2025年春"
+        
+      - label: "作品封面"
+        name: "cover_image"
+        widget: "image"
+        required: false
+        
+      - label: "作品描述"
+        name: "body"
+        widget: "markdown"
+        hint: "描述作品的內容、主題或創作背景"
+        
+      - label: "外部連結"
+        name: "external_link"
+        widget: "string"
+        required: false
+        hint: "購買連結、試讀連結等"
+        
+      - label: "排序"
+        name: "order"
+        widget: "number"
+        default: 1
+        hint: "數字越小越前面顯示"
+
+  # 網站設定
+  - name: "settings"
+    label: "網站設定"
+    files:
+      - file: "_data/site_info.yml"
+        label: "基本資訊"
+        name: "site_info"
+        fields:
+          - label: "網站標題"
+            name: "site_title"
+            widget: "string"
+            default: "筆下世界"
+            
+          - label: "副標題"
+            name: "site_subtitle"
+            widget: "string"
+            default: "用文字編織夢想，以故事連結心靈"
+            
+          - label: "作者名稱"
+            name: "author_name"
+            widget: "string"
+            
+          - label: "作者簡介"
+            name: "author_bio"
+            widget: "text"
+            hint: "會顯示在關於我的區塊"
+            
+          - label: "作者照片"
+            name: "author_photo"
+            widget: "image"
+            required: false
+            
+          - label: "聯絡信箱"
+            name: "contact_email"
+            widget: "string"
+            required: false
+            
+          - label: "社群媒體"
+            name: "social_links"
+            widget: "list"
+            required: false
+            fields:
+              - label: "平台名稱"
+                name: "platform"
+                widget: "select"
+                options: ["Facebook", "Instagram", "Twitter", "YouTube", "Medium", "其他"]
+              - label: "連結"
+                name: "url"
+                widget: "string"
+                
+      - file: "_data/statistics.yml"
+        label: "統計數據"
+        name: "statistics"
+        fields:
+          - label: "統計項目"
+            name: "stats"
+            widget: "list"
+            fields:
+              - label: "數值"
+                name: "number"
+                widget: "string"
+                hint: "例如：5、50K+、∞"
+              - label: "說明"
+                name: "label"
+                widget: "string"
+                hint: "例如：年創作經驗"
+              - label: "排序"
+                name: "order"
+                widget: "number"
+                default: 1
+                
+      - file: "_data/achievements.yml"
+        label: "創作成就"
+        name: "achievements"
+        fields:
+          - label: "成就列表"
+            name: "achievements"
+            widget: "list"
+            fields:
+              - label: "成就描述"
+                name: "description"
+                widget: "string"
+              - label: "年份"
+                name: "year"
+                widget: "string"
+                required: false
+              - label: "排序"
+                name: "order"
+                widget: "number"
+                default: 1
+
+  # 頁面管理
+  - name: "pages"
+    label: "靜態頁面"
+    folder: "_pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - label: "頁面標題"
+        name: "title"
+        widget: "string"
+        
+      - label: "頁面路徑"
+        name: "permalink"
+        widget: "string"
+        hint: "例如：/about/、/contact/"
+        
+      - label: "頁面內容"
+        name: "body"
+        widget: "markdown"
+        
+      - label: "發布狀態"
+        name: "published"
+        widget: "boolean"
+        default: true
+
+# 圖片設定
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: 你的cloudinary名稱  # 可選，也可以用 GitHub
+    api_key: 你的api_key
+
+# 本地化設定
+locale: 'zh-Hant'
+
+# 搜尋設定
+search: true
