@@ -1,17 +1,15 @@
 backend:
   name: github
-  repo: chigusann/writer-website  # 記得更改為你的 repo
+  repo: chigusann/writer-website
   branch: main
-  
-# 本地開發設定 (可選)
-# local_backend: true
+
+# 網站基本設定
+site_url: https://sunny-speculoos-eaff2c.netlify.app
+display_url: https://sunny-speculoos-eaff2c.netlify.app
 
 # 圖片存放位置
 media_folder: "images"
 public_folder: "/images"
-
-# 網站URL (部署後記得更新)
-site_url: https://sunny-speculoos-eaff2c.netlify.app
 
 # 顯示預覽連結
 show_preview_links: true
@@ -20,66 +18,90 @@ show_preview_links: true
 editor:
   preview: true
 
+# 本地化設定
+locale: 'zh-Hant'
+
+# 搜尋設定
+search: true
+
+# 內容集合設定
 collections:
   # 網誌文章管理
   - name: "blog"
-    label: "創作日誌"
+    label: "📝 創作日誌"
     folder: "_posts"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} - {{date}}"
+    sortable_fields: ['date', 'title']
+    view_filters:
+      - label: "已發布"
+        field: "published"
+        pattern: true
+      - label: "草稿"
+        field: "published"
+        pattern: false
+      - label: "置頂文章"
+        field: "pinned"
+        pattern: true
     fields:
-      - label: "標題"
+      - label: "📋 標題"
         name: "title"
         widget: "string"
         hint: "吸引人的文章標題"
         
-      - label: "發布日期"
+      - label: "📅 發布日期"
         name: "date"
         widget: "datetime"
         default: ""
         date_format: "YYYY-MM-DD"
         time_format: "HH:mm"
         format: "YYYY-MM-DD HH:mm:ss"
+        picker_utc: false
         
-      - label: "標籤"
+      - label: "🏷️ 標籤"
         name: "tags"
         widget: "list"
         required: false
         hint: "例如：日常、創作、靈感"
+        add_to_top: false
+        collapsed: false
         
-      - label: "摘要"
+      - label: "📄 摘要"
         name: "excerpt"
         widget: "text"
         required: false
         hint: "文章的簡短摘要，會顯示在首頁"
         
-      - label: "封面圖片"
+      - label: "🖼️ 封面圖片"
         name: "featured_image"
         widget: "image"
         required: false
         hint: "選擇一張代表文章的圖片"
+        choose_url: false
         
-      - label: "YouTube 影片"
+      - label: "📺 YouTube 影片"
         name: "youtube_url"
         widget: "string"
         required: false
         pattern: 
-          - "^(https?://)?(www\\.)?(youtube\\.com/watch\\?v=|youtu\\.be/)[\\w-]+.*$"
-          - "請輸入有效的 YouTube 連結"
+          - "^(https?://)?(www\\.)?(youtube\\.com/watch\\?v=|youtu\\.be/)[\\w-]+.*$|^$"
+          - "請輸入有效的 YouTube 連結，或留空"
         hint: "貼上 YouTube 影片連結，系統會自動嵌入"
         
-      - label: "內文"
+      - label: "✍️ 內文"
         name: "body"
         widget: "markdown"
         hint: "在這裡寫下你的創作內容"
+        editor_components: ["image", "code-block"]
         
-      - label: "發布狀態"
+      - label: "📢 發布狀態"
         name: "published"
         widget: "boolean"
         default: true
         hint: "取消勾選可儲存為草稿"
         
-      - label: "置頂文章"
+      - label: "📌 置頂文章"
         name: "pinned"
         widget: "boolean"
         default: false
@@ -88,112 +110,132 @@ collections:
 
   # 作品集管理
   - name: "portfolio"
-    label: "文學作品"
+    label: "📚 文學作品"
     folder: "_portfolio"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}} ({{category}})"
+    sortable_fields: ['title', 'category', 'order']
     fields:
-      - label: "作品名稱"
+      - label: "📖 作品名稱"
         name: "title"
         widget: "string"
         
-      - label: "作品類型"
+      - label: "📂 作品類型"
         name: "category"
         widget: "select"
         options: 
-          - { label: "長篇小說", value: "長篇小說" }
-          - { label: "短篇小說", value: "短篇小說" }
-          - { label: "短篇集", value: "短篇集" }
-          - { label: "詩歌散文", value: "詩歌散文" }
-          - { label: "劇本", value: "劇本" }
-          - { label: "教學", value: "教學" }
-          - { label: "其他", value: "其他" }
+          - { label: "📕 長篇小說", value: "長篇小說" }
+          - { label: "📘 短篇小說", value: "短篇小說" }
+          - { label: "📗 短篇集", value: "短篇集" }
+          - { label: "📙 詩歌散文", value: "詩歌散文" }
+          - { label: "🎭 劇本", value: "劇本" }
+          - { label: "🎓 教學", value: "教學" }
+          - { label: "📄 其他", value: "其他" }
           
-      - label: "發表日期"
+      - label: "📅 發表日期"
         name: "publication_date"
         widget: "string"
         required: false
-        hint: "例如：2025年春"
+        hint: "例如：2025年春、2024年12月"
         
-      - label: "作品封面"
+      - label: "🖼️ 作品封面"
         name: "cover_image"
         widget: "image"
         required: false
+        choose_url: false
         
-      - label: "作品描述"
+      - label: "📝 作品描述"
         name: "body"
         widget: "markdown"
         hint: "描述作品的內容、主題或創作背景"
         
-      - label: "外部連結"
+      - label: "🔗 外部連結"
         name: "external_link"
         widget: "string"
         required: false
         hint: "購買連結、試讀連結等"
         
-      - label: "排序"
+      - label: "🔢 排序"
         name: "order"
         widget: "number"
         default: 1
+        value_type: "int"
+        min: 1
         hint: "數字越小越前面顯示"
 
   # 網站設定
   - name: "settings"
-    label: "網站設定"
+    label: "⚙️ 網站設定"
     files:
       - file: "_data/site_info.yml"
-        label: "基本資訊"
+        label: "🏠 基本資訊"
         name: "site_info"
         fields:
-          - label: "網站標題"
+          - label: "🌐 網站標題"
             name: "site_title"
             widget: "string"
             default: "筆下世界"
             
-          - label: "副標題"
+          - label: "📝 副標題"
             name: "site_subtitle"
             widget: "string"
             default: "用文字編織夢想，以故事連結心靈"
             
-          - label: "作者名稱"
+          - label: "👤 作者名稱"
             name: "author_name"
             widget: "string"
+            hint: "你的筆名或真名"
             
-          - label: "作者簡介"
+          - label: "📖 作者簡介"
             name: "author_bio"
             widget: "text"
             hint: "會顯示在關於我的區塊"
             
-          - label: "作者照片"
+          - label: "📸 作者照片"
             name: "author_photo"
             widget: "image"
             required: false
+            choose_url: false
             
-          - label: "聯絡信箱"
+          - label: "📧 聯絡信箱"
             name: "contact_email"
             widget: "string"
             required: false
+            hint: "公開的聯絡信箱"
             
-          - label: "社群媒體"
+          - label: "🌐 社群媒體"
             name: "social_links"
             widget: "list"
             required: false
+            collapsed: false
             fields:
               - label: "平台名稱"
                 name: "platform"
                 widget: "select"
-                options: ["Facebook", "Instagram", "Twitter", "YouTube", "Medium", "其他"]
+                options: 
+                  - "Facebook"
+                  - "Instagram"
+                  - "Twitter"
+                  - "YouTube"
+                  - "Medium"
+                  - "LinkedIn"
+                  - "TikTok"
+                  - "其他"
               - label: "連結"
                 name: "url"
                 widget: "string"
+                hint: "完整的 URL，包含 https://"
                 
       - file: "_data/statistics.yml"
-        label: "統計數據"
+        label: "📊 統計數據"
         name: "statistics"
         fields:
           - label: "統計項目"
             name: "stats"
             widget: "list"
+            collapsed: false
+            summary: "{{number}} - {{label}}"
             fields:
               - label: "數值"
                 name: "number"
@@ -207,61 +249,67 @@ collections:
                 name: "order"
                 widget: "number"
                 default: 1
+                value_type: "int"
                 
       - file: "_data/achievements.yml"
-        label: "創作成就"
+        label: "🏆 創作成就"
         name: "achievements"
         fields:
           - label: "成就列表"
             name: "achievements"
             widget: "list"
+            collapsed: false
+            summary: "{{description}} ({{year}})"
             fields:
               - label: "成就描述"
                 name: "description"
                 widget: "string"
+                hint: "例如：出版小說 3 部"
               - label: "年份"
                 name: "year"
                 widget: "string"
                 required: false
+                hint: "例如：2023、2022-2024"
               - label: "排序"
                 name: "order"
                 widget: "number"
                 default: 1
+                value_type: "int"
 
-  # 頁面管理
+  # 靜態頁面管理
   - name: "pages"
-    label: "靜態頁面"
+    label: "📄 靜態頁面"
     folder: "_pages"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}}"
     fields:
-      - label: "頁面標題"
+      - label: "📋 頁面標題"
         name: "title"
         widget: "string"
         
-      - label: "頁面路徑"
+      - label: "🔗 頁面路徑"
         name: "permalink"
         widget: "string"
-        hint: "例如：/about/、/contact/"
+        hint: "例如：/about/、/contact/（記得加斜線）"
+        pattern: 
+          - "^/.*/$"
+          - "路徑必須以 / 開始和結束"
         
-      - label: "頁面內容"
+      - label: "📝 頁面內容"
         name: "body"
         widget: "markdown"
         
-      - label: "發布狀態"
+      - label: "📢 發布狀態"
         name: "published"
         widget: "boolean"
         default: true
 
-# 圖片設定
+# 圖片設定 - 使用 GitHub 儲存
 media_library:
-  name: cloudinary
-  config:
-    cloud_name: 你的cloudinary名稱  # 可選，也可以用 GitHub
-    api_key: 你的api_key
-
-# 本地化設定
-locale: 'zh-Hant'
-
-# 搜尋設定
-search: true
+  name: github
+  
+# 編輯器工具列自訂
+editor:
+  preview: true
+  frame: true
