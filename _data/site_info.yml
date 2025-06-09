@@ -1,0 +1,46 @@
+# _data/site_info.yml
+site_title: "筆下世界"
+site_subtitle: "用文字編織夢想，以故事連結心靈"
+author_name: "你的筆名"
+author_bio: "一位熱愛文字的創作者，專注於探索人性的深度與情感的溫度。透過不同的故事形式，分享生活中的美好與感動。"
+contact_email: "your.email@example.com"
+
+social_links:
+  - platform: "Facebook"
+    url: "https://facebook.com/yourpage"
+  - platform: "Instagram" 
+    url: "https://instagram.com/yourname"
+
+---
+
+# _data/statistics.yml
+stats:
+  - number: "5"
+    label: "年創作經驗"
+    order: 1
+  - number: "12"
+    label: "作品發表"
+    order: 2
+  - number: "50K+"
+    label: "讀者追蹤"
+    order: 3
+  - number: "365"
+    label: "日更新誌"
+    order: 4
+
+---
+
+# _data/achievements.yml
+achievements:
+  - description: "出版小說 3 部"
+    year: "2022-2024"
+    order: 1
+  - description: "短篇小說獎得主"
+    year: "2023"
+    order: 2
+  - description: "文學雜誌專欄作家"
+    year: "2024"
+    order: 3
+  - description: "讀者社群 5000+ 人"
+    year: "2024"
+    order: 4
