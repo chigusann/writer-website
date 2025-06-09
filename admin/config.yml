@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: 你的GitHub帳號/writer-website  # 記得更改為你的 repo
+  repo: chigusann/writer-website  # 記得更改為你的 repo
   branch: main
   
 # 本地開發設定 (可選)
