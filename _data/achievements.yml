@@ -1,0 +1,13 @@
+achievements:
+  - description: "出版小說 3 部"
+    year: "2022-2024"
+    order: 1
+  - description: "短篇小說獎得主"
+    year: "2023"
+    order: 2
+  - description: "文學雜誌專欄作家"
+    year: "2024"
+    order: 3
+  - description: "讀者社群 5000+ 人"
+    year: "2024"
+    order: 4
